@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<body>
+    <div class="box">
+        <h1 class="heading_big">{{domain_name}}</h1>
+        <h2 class="heading_med">{{domain_ip}}</h2>
+        
+        <div class="head down">
+            <h1 class="heading_big">SERVER DOWN</h1>
+            <h2 class="heading_med">{{len_down}} times down</h2>
+        </div>     
+        <textarea class="logs down" disabled name="logs" id="logs" cols="30" rows="10">
+            {% for down in down_list %}
+                {{stars}}
+                {{down}}
+            {% endfor %}
+        </textarea>
+             
+        <h1 class="heading_big up">SERVER UP</h1>
+        <textarea class="logs up" disabled name="logs" id="logs" cols="30" rows="10">
+            {% for up in up_list %}
+                {{stars}}
+                {{up}}
+            {% endfor %}
+        </textarea>
+             
+        
+    </div>
+    <script>
+        setInterval(function  loadDoc() {
+        const xhttp = new XMLHttpRequest();
+        xhttp.onload = function() {
+            document.getElementById("logs").innerHTML = document.getElementById("logs").innerHTML;
+            }
+        xhttp.open("GET", "/check", true);
+        xhttp.send();
+        }, 16000)
+    </script>
+</body>
+
+{% endblock %}

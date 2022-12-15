@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block content %}
+<body>
+    <div style="margin-top: 3vh" class="container">
+        <h3>Server List</h3>
+        <br>
+        <form action="/add" method="post">
+            <div class="forms">
+                <label>IP ADDRESS---></label>
+                <input type="text" name="ip" placeholder="ip address...">
+            </div>
+            <div class="forms">
+                <label>DOMAIN---></label>
+                <input type="text" name="domain" placeholder="domain...">
+            </div>
+            <div class="forms">
+                <button type="submit" class="btn">Add</button>
+            </div>
+        </form>
+        {% if domains == [] %}
+            <div class = "alert alert-warning">Herhangi bir sunucunuz bulunamadı!</div>
+        {% else %}
+            <div id="servers" class="servers">
+            {% set delay = 0 %}
+            {% for domain in domains %}
+                {% if domain.power == 0 %}
+                <div id="server" class="card card-alert" style="">
+                    <audio id="myaudio" autoplay controls>
+                        <source src="{{url_for('static', filename='sound.mp3')}}" type="audio/mpeg">
+                    </audio>
+                    <img class="server" src="{{url_for('static', filename='data-server.jpeg')}}" alt="Server">
+                    <div class="info">
+                        <h1>{{domain.domain}}</h1>
+                        <a href="/details/{{domain.id}}">
+                        <h3>{{domain.ip}}</h3>
+                        </a>
+                        <h2 id="down" style="color: red">SERVER DOWN</h2>
+                    </div>
+                    <a href="/delete/{{domain.id}}" class="btn">Delete</a>
+                </div>
+                {% else %}
+                <div id="server" class="card card-normal">
+                    <img class="server" src="{{url_for('static', filename='data-server.jpeg')}}" alt="Server">
+                    <div class="info">
+                        <h1>{{domain.domain}}</h1>
+                        <a href="/details/{{domain.id}}">
+                        <h3>{{domain.ip}}</h3>
+                        </a>
+                        <h2 id="up" style="animation: infinite process 1s; color: lawngreen;">SERVER UP</h2>
+                        {% set delay = delay + 0.5 %}
+                    </div>
+                    <a href="/delete/{{domain.id}}" class="btn">Delete</a>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    <script defer>
+        setInterval( function  loadDoc() {
+        var ups = document.querySelectorAll("#up");
+        var total = ups.length;
+        var delay  = 0;
+        ups.forEach(up => {
+            up.style.animationDelay = delay + 's';
+            delay = delay + 0.25;
+        })
+    }, 1000)
+    </script>
+    <script>
+        var sound = document.getElementById("myaudio");
+        sound.volume = 0.2;
+        console.log("Ses ayarlandı")
+    </script>
+    <script>
+        setInterval(function  loadDoc() {
+          const xhttp = new XMLHttpRequest();
+          xhttp.onload = function() {
+            document.getElementById("servers").innerHTML = this.responseText;
+            }
+          xhttp.open("GET", "/check", true);
+          xhttp.send();
+        }, 16000)
+    </script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+
+{% endblock %}

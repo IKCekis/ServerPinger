@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<body onload="delayFunc()">
+    {% for domain in domains %}
+                {% if domain.power == 0 %}
+                <div id="server" class="card card-alert" style="">
+                    <audio id="myaudio" autoplay controls>
+                        <source src="{{url_for('static', filename='sound.mp3')}}" type="audio/mpeg">
+                    </audio>
+                    <img class="server" src="{{url_for('static', filename='data-server.jpeg')}}" alt="Server">
+                    <div class="info">
+                        <h1>{{domain.domain}}</h1>
+                        <a href="/details/{{domain.id}}">
+                        <h3>{{domain.ip}}</h3>
+                        </a>
+                        <h2 id="down" style="color: red">SERVER DOWN</h2>
+                    </div>
+                    <a href="/delete/{{domain.id}}" class="btn">Delete</a>
+                </div>
+                {% else %}
+                <div id="server" class="card card-normal">
+                    <img class="server" src="{{url_for('static', filename='data-server.jpeg')}}" alt="Server">
+                    <div class="info">
+                        <h1>{{domain.domain}}</h1>
+                        <a href="/details/{{domain.id}}">
+                        <h3>{{domain.ip}}</h3>
+                        </a>
+                        <h2 id="up" style="animation: infinite process 1s; color: lawngreen">SERVER UP</h2>
+                    </div>
+                    <a href="/delete/{{domain.id}}" class="btn">Delete</a>
+                </div>
+                {% endif %}
+            {% endfor %}
+            <script>
+                function  delayFunc() {
+                var ups = document.querySelectorAll("#up");
+                var total = ups.length;
+                var delay  = 0;
+                ups.forEach(up => {
+                    up.style.animationDelay = delay + 's';
+                    delay = delay + 0.25;
+                })
+            }
+        </script>
+    <script>
+        var sound = document.getElementById("myaudio");
+        sound.volume = 0.2;
+        console.log("Ses ayarlandı")
+    </script>
+</body>
+</html>
